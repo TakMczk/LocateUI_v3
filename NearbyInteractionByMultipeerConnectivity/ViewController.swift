@@ -10,6 +10,7 @@ import MultipeerConnectivity
 import NearbyInteraction
 
 var r_for_ui: Double = 100
+//ちゃんとこの値が半径に反映されている
 
 class ViewController: UIViewController {
     // MARK: - NearbyInteraction variables
@@ -62,7 +63,7 @@ class ViewController: UIViewController {
         }
     
     override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
+        super.viewDidAppear(animated)           
         
         if niSession != nil {
             return
@@ -106,6 +107,51 @@ class ViewController: UIViewController {
         present(mcBrowserViewController!, animated: true)
     }
     
+}
+
+// MARK: - NISessionDelegate
+extension ViewController: NISessionDelegate {
+    func session(_ session: NISession, didUpdate nearbyObjects: [NINearbyObject]) {
+        var stringData = ""
+        // The session runs with one accessory.
+        guard let accessory = nearbyObjects.first else { return }
+
+        if let distance = accessory.distance {
+            distanceLabel.text = distance.description
+            stringData += distance.description
+            
+            let doubleDistance = Double(distanceLabel.text!)
+            r_for_ui = r_for_ui * doubleDistance!
+//            r_for_uiに、距離のデータを代入
+
+        }else {
+            distanceLabel.text = "-"
+        }
+        stringData += ","
+        
+        
+        if let direction = accessory.direction {
+            directionXLabel.text = direction.x.description
+            directionYLabel.text = direction.y.description
+            directionZLabel.text = direction.z.description
+            
+            stringData += direction.x.description + ","
+            stringData += direction.y.description + ","
+            stringData += direction.z.description
+        }else {
+            directionXLabel.text = "-"
+            directionYLabel.text = "-"
+            directionZLabel.text = "-"
+        }
+        
+        stringData += "\n"
+        file.addDataToFile(rowString: stringData)
+        
+    }
+    //ここに処理を書き込めば動くのではないか…？？
+//    こっちも動いている
+    
+    
     class DrawView: UIView {
      
         override init(frame: CGRect) {
@@ -142,45 +188,8 @@ class ViewController: UIViewController {
             circle.stroke()
             
         }
-     
-    }
-    
-}
 
-// MARK: - NISessionDelegate
-extension ViewController: NISessionDelegate {
-    func session(_ session: NISession, didUpdate nearbyObjects: [NINearbyObject]) {
-        var stringData = ""
-        // The session runs with one accessory.
-        guard let accessory = nearbyObjects.first else { return }
-
-        if let distance = accessory.distance {
-            distanceLabel.text = distance.description
-            stringData += distance.description
-        }else {
-            distanceLabel.text = "-"
-        }
-        stringData += ","
-        
-        
-        if let direction = accessory.direction {
-            directionXLabel.text = direction.x.description
-            directionYLabel.text = direction.y.description
-            directionZLabel.text = direction.z.description
-            
-            stringData += direction.x.description + ","
-            stringData += direction.y.description + ","
-            stringData += direction.z.description
-        }else {
-            directionXLabel.text = "-"
-            directionYLabel.text = "-"
-            directionZLabel.text = "-"
-        }
-        
-        stringData += "\n"
-        file.addDataToFile(rowString: stringData)
     }
-    
 }
 
 // MARK: - MCNearbyServiceAdvertiserDelegate
