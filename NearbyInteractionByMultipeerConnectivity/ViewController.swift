@@ -122,7 +122,7 @@ extension ViewController: NISessionDelegate {
             stringData += distance.description
             
             let doubleDistance = Double(distanceLabel.text!)
-            r_for_ui = r_for_ui * doubleDistance!
+            r_for_ui = doubleDistance!
             
             r_UI_Label.text = r_for_ui.description
 //            r_for_uiに、距離のデータを代入
