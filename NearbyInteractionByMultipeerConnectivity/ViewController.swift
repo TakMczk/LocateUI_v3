@@ -33,21 +33,22 @@ class ViewController: UIViewController {
     @IBOutlet weak var directionXLabel: UILabel!
     @IBOutlet weak var directionYLabel: UILabel!
     @IBOutlet weak var directionZLabel: UILabel!
+    @IBOutlet weak var r_UI_Label: UILabel!
     
     //スライダー追加時の挙動
     @IBOutlet weak var label: UILabel!
 
     var drawView: DrawView?
  
-    @IBAction func sliderChanged(_ sender: UISlider) {
-        label.text = String(sender.value * 100)
-        r_for_ui = Double(sender.value) * 100
-        //ラベルに値を流し込む
-        print(r_for_ui)
-
-        // NOTE(mactkg): drawViewに対して、再描画を依頼すればOK。
-        self.drawView?.setNeedsDisplay()
-    }
+//    @IBAction func sliderChanged(_ sender: UISlider) {
+//        label.text = String(sender.value * 100)
+//        r_for_ui = Double(sender.value) * 100
+//        //ラベルに値を流し込む
+//        print(r_for_ui)
+//
+//        // NOTE(mactkg): drawViewに対して、再描画を依頼すればOK。
+//        self.drawView?.setNeedsDisplay()
+//    }
     
     
     // MARK: - UI lifecycle
@@ -122,10 +123,15 @@ extension ViewController: NISessionDelegate {
             
             let doubleDistance = Double(distanceLabel.text!)
             r_for_ui = r_for_ui * doubleDistance!
+            
+            r_UI_Label.text = r_for_ui.description
 //            r_for_uiに、距離のデータを代入
+            drawView?.setNeedsDisplay()
 
         }else {
             distanceLabel.text = "-"
+            r_UI_Label.text = "-"
+
         }
         stringData += ","
         
@@ -175,7 +181,7 @@ extension ViewController: NISessionDelegate {
             
             
             // 円
-            let circle = UIBezierPath(arcCenter: CGPoint(x: 150, y: 150), radius: r_for_ui, startAngle: 0, endAngle: CGFloat(Double.pi)*2, clockwise: true)
+            let circle = UIBezierPath(arcCenter: CGPoint(x: 150, y: 150), radius: r_for_ui*100, startAngle: 0, endAngle: CGFloat(Double.pi)*2, clockwise: true)
             // 内側の色
             UIColor(red: 0, green: 0, blue: 1, alpha: 0.3).setFill()
             // 内側を塗りつぶす
